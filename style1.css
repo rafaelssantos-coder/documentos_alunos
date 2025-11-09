@@ -1,0 +1,424 @@
+/* Define a codificação de caracteres do arquivo CSS como UTF-8 para garantir 
+   que caracteres especiais e acentos sejam exibidos corretamente */
+@charset "UTF-8";
+
+/* RESET GERAL 
+   Remove todas as margens e preenchimentos padrão dos navegadores
+   e define box-sizing: border-box para que padding e border sejam incluídos
+   na largura e altura total dos elementos */
+* {
+  margin: 0;          /* Remove margens externas de todos os elementos */
+  padding: 0;         /* Remove preenchimentos internos de todos os elementos */
+  box-sizing: border-box; /* Faz com que width e height incluam padding e border */
+}
+
+/* Estilos gerais do corpo da página */
+body {
+  background-color: #fff; /* Fundo branco */
+  font-family: Verdana, Geneva, Tahoma, sans-serif; /* Fonte sans-serif para melhor legibilidade */
+  line-height: 1.6; /* Melhora a legibilidade do texto */
+}
+
+/* MENU SUPERIOR - Barra fixa no topo da página */
+.menu {
+  width: 100%;           /* Ocupa 100% da largura da tela */
+  height: 70px;          /* Altura fixa de 70 pixels */
+  background-color: #11228d; /* Cor de fundo azul escuro */
+  color: #fff;           /* Cor do texto branco */
+  display: flex;         /* Usa flexbox para alinhamento interno */
+  align-items: center;   /* Centraliza verticalmente os itens */
+  justify-content: center; /* Centraliza horizontalmente os itens */
+  position: fixed;       /* Fixa o menu no topo durante o scroll */
+  top: 0;                /* Cola no topo da viewport */
+  left: 0;               /* Cola na esquerda da viewport */
+  z-index: 1000;         /* Garante que o menu fique acima de outros elementos */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra suave abaixo do menu */
+  padding: 0 20px; /* Adiciona padding lateral para telas pequenas */
+}
+
+/* Estilo do título dentro do menu */
+.menu h1 {
+  font-size: 1.5em;    /* Tamanho da fonte 1.5 vezes o tamanho base */
+  font-weight: 600;    /* Peso da fonte semi-negrito */
+  text-align: center; /* Centraliza o texto */
+}
+
+/* CONTEÚDO PRINCIPAL - Área abaixo do menu onde o conteúdo é exibido */
+.conteudo {
+  margin-top: 100px;     /* Espaço superior para não ficar embaixo do menu fixo */
+  width: 95%;            /* Ocupa 95% da largura disponível (aumentado para mobile) */
+  max-width: 1200px;     /* Largura máxima aumentada para telas grandes */
+  margin-left: auto;     /* Centraliza horizontalmente */
+  margin-right: auto;    /* Centraliza horizontalmente */
+  padding: 20px 15px;    /* Espaçamento interno reduzido lateralmente para mobile */
+}
+
+/* Elemento que exibe mensagens de status (carregando, erro, etc) */
+#status {
+  text-align: center;    /* Centraliza o texto */
+  margin-bottom: 25px;   /* Espaço abaixo do elemento */
+  font-weight: 500;      /* Peso da fonte médio */
+  color: #333;           /* Cor do texto cinza escuro */
+  padding: 0 10px; /* Adiciona padding lateral */
+}
+
+/* Container das abas de filtro */
+.tabs {
+  display: flex;           /* Usa flexbox para alinhar as abas horizontalmente */
+  justify-content: center; /* Centraliza as abas horizontalmente */
+  gap: 10px;              /* Espaço reduzido entre cada aba para mobile */
+  margin-bottom: 25px;    /* Espaço abaixo das abas */
+  flex-wrap: wrap;        /* Permite quebra de linha nas abas */
+  padding: 0 10px; /* Adiciona padding lateral */
+}
+
+/* Estilo individual de cada aba */
+.tab {
+  padding: 10px 16px;      /* Espaçamento interno reduzido para mobile */
+  background-color: #f2f2f2; /* Cor de fundo cinza claro */
+  border-radius: 8px;       /* Bordas arredondadas */
+  cursor: pointer;          /* Muda cursor para pointer (mãozinha) */
+  font-weight: 600;         /* Peso da fonte semi-negrito */
+  transition: 0.3s;         /* Transição suave de 0.3 segundos para efeitos hover */
+  font-size: 0.9em;        /* Tamanho de fonte reduzido para mobile */
+  text-align: center;      /* Centraliza texto dentro da aba */
+  flex: 1;                 /* Faz as abas se expandirem igualmente */
+  min-width: 120px;        /* Largura mínima para manter legibilidade */
+}
+
+/* Estilo da aba quando está ativa/selecionada */
+.tab.active {
+  background-color: #11228d; /* Muda cor de fundo para azul escuro */
+  color: #fff;               /* Muda cor do texto para branco */
+}
+
+/* Barra de filtro que contém o campo de busca */
+.filter-bar {
+  display: flex;               /* Usa flexbox para alinhamento */
+  justify-content: space-between; /* Distribui espaço entre os elementos */
+  align-items: center;         /* Alinha verticalmente ao centro */
+  margin-bottom: 15px;         /* Espaço abaixo da barra */
+  flex-wrap: wrap;             /* Permite que elementos quebrem linha em telas pequenas */
+  gap: 15px;                   /* Espaço entre os elementos */
+  padding: 0 10px; /* Adiciona padding lateral */
+}
+
+/* Estilo do campo de input de busca */
+.filter-bar input {
+  padding: 10px 12px;        /* Aumenta padding para melhor toque em mobile */
+  border: 1px solid #ccc;    /* Borda cinza clara */
+  border-radius: 8px;        /* Bordas arredondadas */
+  width: 100%;               /* Largura total em mobile */
+  max-width: 300px;          /* Largura máxima */
+  font-size: 16px;           /* Tamanho de fonte aumentado para evitar zoom em iOS */
+  margin: 0 auto; /* Centraliza o input */
+}
+
+/* Container dos indicadores de estatísticas (contadores) */
+.stats {
+  display: flex;               /* Usa flexbox para alinhar os contadores */
+  justify-content: center;     /* Centraliza os contadores horizontalmente */
+  gap: 15px;                   /* Espaço reduzido entre cada contador para mobile */
+  flex-wrap: wrap;             /* Permite quebra de linha em telas pequenas */
+  margin-bottom: 20px;         /* Espaço abaixo dos contadores */
+  color: #0b0f41;             /* Cor do texto azul muito escuro */
+  font-weight: 600;            /* Peso da fonte semi-negrito */
+  padding: 0 10px; /* Adiciona padding lateral */
+}
+
+/* Estilo individual de cada contador de estatística */
+.stats span {
+  background: #f5f6ff;        /* Fundo azul muito claro */
+  padding: 10px 15px;         /* Aumenta padding para melhor visualização em mobile */
+  border-radius: 6px;         /* Bordas levemente arredondadas */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Sombra suave para efeito de elevação */
+  font-size: 0.9em;          /* Tamanho de fonte reduzido para mobile */
+  text-align: center;        /* Centraliza o texto */
+  flex: 1;                   /* Expande igualmente */
+  min-width: 130px;          /* Largura mínima */
+}
+
+/* Cabeçalho da lista de arquivos (linha com títulos das colunas) */
+.header-row {
+  display: grid;                      /* Usa CSS Grid para layout de colunas */
+  grid-template-columns: 1fr 120px 150px 120px; /* Colunas com larguras reduzidas para tablet */
+  align-items: center;                /* Alinha verticalmente ao centro */
+  font-weight: 600;                   /* Peso da fonte semi-negrito */
+  color: #0b0f41;                     /* Cor do texto azul muito escuro */
+  font-size: 0.9rem;                 /* Tamanho de fonte reduzido */
+  padding-bottom: 8px;                /* Espaço abaixo interno */
+  border-bottom: 2px solid #11228d;   /* Linha inferior azul escura de 2px */
+  margin-bottom: 10px;                /* Espaço abaixo externo */
+  padding: 0 10px; /* Adiciona padding lateral */
+}
+
+/* Primeiro span do cabeçalho (coluna "Arquivos") */
+.header-row span:first-child {
+  text-align: left;     /* Alinha o texto à esquerda */
+  padding-left: 5px;    /* Reduz espaço à esquerda */
+}
+
+/* Todos os spans do cabeçalho exceto o primeiro (colunas de status) */
+.header-row span:not(:first-child) {
+  text-align: center;   /* Centraliza o texto horizontalmente */
+  font-size: 0.85rem;  /* Reduz tamanho da fonte para caber melhor */
+}
+
+/* Lista não ordenada que contém os arquivos */
+ul {
+  list-style-type: none; /* Remove os marcadores/bullets padrão da lista */
+  padding-left: 0;       /* Remove o padding esquerdo padrão */
+  width: 100%;           /* Ocupa 100% da largura disponível */
+}
+
+/* Item individual da lista (cada linha de arquivo) */
+li {
+  display: grid;                      /* Usa CSS Grid para layout igual ao cabeçalho */
+  grid-template-columns: 1fr 120px 150px 120px; /* Mesma estrutura de colunas do cabeçalho */
+  align-items: center;                /* Alinha verticalmente ao centro */
+  padding: 12px 10px;                 /* Aumenta padding vertical e adiciona lateral */
+  gap: 8px; /* Adiciona gap entre as colunas */
+}
+
+/* Container com as informações do arquivo (nome e metadados) */
+.file-info {
+  text-align: left; /* Alinha o conteúdo à esquerda */
+  min-width: 0; /* Permite que o texto quebre corretamente */
+}
+
+/* Link do nome do arquivo */
+.file-info a {
+  color: #11228d;           /* Cor azul escuro igual ao menu */
+  font-weight: 600;         /* Peso da fonte semi-negrito */
+  text-decoration: none;    /* Remove sublinhado padrão dos links */
+  display: block;           /* Faz o link ocupar toda a largura disponível */
+  margin-bottom: 4px;       /* Pequeno espaço abaixo do link */
+  word-break: break-word;  /* Permite quebra de palavras longas */
+  line-height: 1.4;        /* Melhora legibilidade */
+}
+
+/* Efeito hover no link do arquivo */
+.file-info a:hover {
+  text-decoration: underline; /* Adiciona sublinhado quando o mouse passa por cima */
+}
+
+/* Metadados do arquivo (tipo MIME e tamanho) */
+.meta {
+  font-size: 0.8rem; /* Tamanho de fonte menor que o normal */
+  color: #555;        /* Cor cinza médio para contraste mais suave */
+  line-height: 1.4;  /* Melhora legibilidade */
+}
+
+/* Container dos grupos de radio buttons (opções de status) */
+.checkbox-group {
+  display: flex;               /* Usa flexbox para alinhar os radios */
+  justify-content: center;     /* Centraliza horizontalmente */
+  align-items: center;         /* Centraliza verticalmente */
+  height: 100%;               /* Ocupa altura total da linha */
+}
+
+/* Estilização dos inputs do tipo radio */
+input[type="radio"] {
+  width: 20px;             /* Aumenta largura para melhor toque em mobile */
+  height: 20px;            /* Aumenta altura para melhor toque em mobile */
+  accent-color: #11228d;   /* Cor azul escuro para o radio button selecionado */
+  cursor: pointer;         /* Muda cursor para pointer (mãozinha) */
+}
+
+/* Linha separadora entre os itens da lista */
+hr {
+  border: none;                 /* Remove a borda padrão */
+  border-top: 1.5px solid #ccc; /* Adiciona uma linha superior cinza */
+  margin: 8px 10px;            /* Aumenta margem e adiciona lateral */
+}
+
+/* ========== RESPONSIVIDADE - MÚLTIPLOS BREAKPOINTS ========== */
+
+/* Telas MUITO PEQUENAS (Smartphones pequenos) - até 480px */
+@media (max-width: 480px) {
+  .menu {
+    height: 60px; /* Reduz altura do menu */
+    padding: 0 15px;
+  }
+  
+  .menu h1 {
+    font-size: 1.3em; /* Reduz tamanho do título */
+  }
+  
+  .conteudo {
+    margin-top: 80px; /* Reduz margem superior */
+    width: 100%; /* Ocupa 100% da largura */
+    padding: 15px 10px; /* Reduz padding */
+  }
+  
+  .tabs {
+    gap: 8px; /* Reduz gap entre abas */
+  }
+  
+  .tab {
+    padding: 8px 12px; /* Reduz padding das abas */
+    font-size: 0.8em; /* Reduz tamanho da fonte */
+    min-width: 100px; /* Reduz largura mínima */
+  }
+  
+  .stats {
+    gap: 10px; /* Reduz gap entre estatísticas */
+  }
+  
+  .stats span {
+    padding: 8px 10px; /* Reduz padding */
+    font-size: 0.8em; /* Reduz tamanho da fonte */
+    min-width: 110px; /* Reduz largura mínima */
+  }
+  
+  .filter-bar input {
+    font-size: 14px; /* Reduz tamanho da fonte do input */
+  }
+}
+
+/* Telas PEQUENAS (Smartphones) - 481px até 768px */
+@media (max-width: 768px) {
+  .header-row, li {
+    grid-template-columns: 1fr; /* Muda para layout de uma única coluna */
+    text-align: left;           /* Alinha todo o texto à esquerda */
+    gap: 0; /* Remove gap */
+  }
+
+  .header-row {
+    display: none; /* Oculta completamente o cabeçalho */
+  }
+
+  li {
+    display: flex;                  /* Muda de grid para flexbox */
+    flex-direction: column;         /* Empilha os elementos verticalmente */
+    align-items: flex-start;        /* Alinha os elementos à esquerda */
+    padding: 15px 10px;            /* Aumenta padding para melhor toque */
+    border: 1px solid #e0e0e0;     /* Adiciona borda para separar visualmente */
+    border-radius: 8px;            /* Adiciona bordas arredondadas */
+    margin-bottom: 10px;           /* Espaço entre os itens */
+    background: #fafafa;           /* Fundo levemente cinza para diferenciar */
+  }
+
+  .checkbox-group {
+    justify-content: flex-start; /* Alinha os radios à esquerda */
+    gap: 25px;                   /* Aumenta espaço entre os radios */
+    margin-top: 12px;            /* Aumenta espaço acima do grupo de radios */
+    width: 100%;                 /* Ocupa largura total */
+    padding: 8px 0;             /* Adiciona padding vertical */
+    border-top: 1px solid #eee;  /* Linha separadora acima dos radios */
+  }
+  
+  /* Estiliza os labels dos radios para mobile */
+  .checkbox-group::before {
+    content: "Status:";          /* Adiciona label */
+    font-weight: 600;
+    color: #333;
+    margin-right: 15px;
+  }
+  
+  .file-info {
+    width: 100%; /* Ocupa largura total */
+  }
+  
+  .file-info a {
+    font-size: 1.1em; /* Aumenta tamanho do link para melhor legibilidade */
+  }
+  
+  hr {
+    display: none; /* Remove as linhas separadoras em mobile */
+  }
+}
+
+/* Telas MÉDIAS (Tablets) - 769px até 1024px */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .conteudo {
+    width: 98%; /* Aumenta largura para aproveitar melhor o espaço */
+    padding: 20px 10px; /* Reduz padding lateral */
+  }
+  
+  .header-row, li {
+    grid-template-columns: 1fr 100px 140px 100px; /* Reduz larguras das colunas */
+  }
+  
+  .tab {
+    padding: 10px 14px; /* Ajusta padding das abas */
+    font-size: 0.85em; /* Reduz levemente a fonte */
+  }
+  
+  .stats span {
+    min-width: 120px; /* Reduz largura mínima */
+    font-size: 0.85em; /* Reduz tamanho da fonte */
+  }
+  
+  .file-info a {
+    font-size: 0.95em; /* Reduz levemente o tamanho do link */
+  }
+}
+
+/* Telas GRANDES (Desktops) - 1025px até 1440px */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .conteudo {
+    max-width: 1100px; /* Mantém largura máxima confortável */
+  }
+  
+  .header-row, li {
+    grid-template-columns: 1fr 140px 180px 140px; /* Ajusta colunas para desktop */
+  }
+}
+
+/* Telas MUITO GRANDES (Desktops wide) - acima de 1441px */
+@media (min-width: 1441px) {
+  .conteudo {
+    max-width: 1400px; /* Aumenta largura máxima para telas muito grandes */
+  }
+  
+  .header-row, li {
+    grid-template-columns: 1fr 160px 220px 160px; /* Colunas mais largas */
+  }
+  
+  body {
+    font-size: 18px; /* Aumenta tamanho base da fonte para melhor legibilidade */
+  }
+}
+
+/* Melhorias de Acessibilidade e Usabilidade */
+@media (hover: hover) {
+  /* Efeitos hover apenas para dispositivos que suportam hover */
+  .tab:hover {
+    background-color: #e0e0e0; /* Cor de hover para abas */
+    transform: translateY(-1px); /* Efeito de elevação sutil */
+  }
+  
+  .file-info a:hover {
+    color: #0a1a6d; /* Cor mais escura no hover */
+  }
+}
+
+/* Orientação Landscape em Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .menu {
+    height: 60px; /* Reduz altura do menu em landscape */
+  }
+  
+  .conteudo {
+    margin-top: 80px; /* Reduz margem superior */
+  }
+  
+  .tabs {
+    flex-wrap: nowrap; /* Impede quebra de linha das abas */
+    overflow-x: auto; /* Permite scroll horizontal se necessário */
+    padding-bottom: 5px; /* Espaço para scroll */
+  }
+}
+
+/* Melhorias para dispositivos com tela de toque */
+@media (pointer: coarse) {
+  input[type="radio"] {
+    width: 24px;  /* Aumenta tamanho para toque */
+    height: 24px; /* Aumenta tamanho para toque */
+  }
+  
+  .tab {
+    padding: 12px 16px; /* Aumenta área de toque */
+  }
+}
