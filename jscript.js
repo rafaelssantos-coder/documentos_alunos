@@ -1,35 +1,47 @@
+// URL da API do Google Apps Script que fornece os dados dos arquivos
 const API_URL = "https://script.google.com/macros/s/AKfycbwJDYQ9bQm3_mOn5cPQVdzAAkKYAWdDnwb_K3SyTpn5mj-Ibld2jXRXDSvmftSV9Hzh/exec";
 
-let allFiles = [];
-let statuses = [];
-let currentTab = "arquivos";
-let currentPage = 1;
-const filesPerPage = 10;
+// Variáveis globais
+let allFiles = [];        // Armazena todos os arquivos da API
+let statuses = [];        // Armazena o status de cada arquivo
+let currentTab = "arquivos"; // Aba atualmente selecionada
+let currentPage = 1;      // Página atual na paginação
+const filesPerPage = 10;  // Número de arquivos por página
 
-// Carrega arquivos da API
+// Função principal para carregar arquivos da API
 async function loadFiles() {
   const statusElem = document.getElementById('status');
   try {
+    // Faz requisição para a API
     const res = await fetch(API_URL);
     if (!res.ok) throw new Error("Erro ao acessar API: " + res.status);
+    
+    // Converte resposta para JSON
     allFiles = await res.json();
 
-    // Tenta recuperar status salvos
+    // Tenta recuperar status salvos no localStorage
     const saved = JSON.parse(localStorage.getItem("fileStatuses") || "null");
+    
+    // Se existem status salvos e o número corresponde ao de arquivos
     if (saved && saved.length === allFiles.length) {
       statuses = saved;
     } else {
+      // Inicializa todos como "pendente"
       statuses = new Array(allFiles.length).fill("pendente");
     }
 
+    // Atualiza mensagem de status
     statusElem.textContent = `Encontrados ${allFiles.length} arquivo(s).`;
+    
+    // Renderiza os arquivos na tela
     renderFiles();
   } catch (err) {
+    // Tratamento de erro
     statusElem.textContent = "Erro: " + err.message;
   }
 }
 
-// Salva no localStorage
+// Salva os status no localStorage para persistência
 function saveStatuses() {
   localStorage.setItem("fileStatuses", JSON.stringify(statuses));
 }
@@ -38,18 +50,19 @@ function saveStatuses() {
 function renderFiles() {
   const ul = document.getElementById('files');
   const searchTerm = document.getElementById('searchBox').value.toLowerCase();
-  ul.innerHTML = "";
+  ul.innerHTML = ""; // Limpa a lista
 
+  // Cria array com índices para referência
   let filtered = allFiles.map((f, i) => ({ ...f, index: i }));
 
-  // 🔍 Busca global
+  // Aplica filtro de busca se houver termo
   if (searchTerm) {
     filtered = filtered.filter(f => f.name.toLowerCase().includes(searchTerm));
   } else {
-    // 📂 Filtro de abas
+    // Aplica filtro por aba
     filtered = filtered.filter(f => {
       const st = statuses[f.index];
-      if (currentTab === "arquivos") return true;
+      if (currentTab === "arquivos") return true; // Mostra todos
       if (currentTab === "pendente") return st === "pendente";
       if (currentTab === "validado") return st === "validado";
       if (currentTab === "erro") return st === "erro";
@@ -60,22 +73,26 @@ function renderFiles() {
 
   // Paginação
   const totalPages = Math.ceil(filtered.length / filesPerPage);
-  if (currentPage > totalPages) currentPage = 1;
+  if (currentPage > totalPages) currentPage = 1; // Ajusta página se necessário
   const start = (currentPage - 1) * filesPerPage;
   const paginated = filtered.slice(start, start + filesPerPage);
 
-  // Renderiza cada arquivo
+  // Renderiza cada arquivo da página atual
   paginated.forEach(f => {
     const i = f.index;
     const li = document.createElement('li');
+    
+    // Cria container de informações do arquivo
     const fileInfo = document.createElement('div');
     fileInfo.className = "file-info";
 
+    // Link para o arquivo
     const a = document.createElement('a');
     a.href = f.url;
     a.textContent = f.name;
-    a.target = "_blank";
+    a.target = "_blank"; // Abre em nova aba
 
+    // Metadados do arquivo
     const meta = document.createElement('div');
     meta.className = "meta";
     meta.textContent = `${f.mimeType} — ${f.size} bytes`;
@@ -84,22 +101,23 @@ function renderFiles() {
     fileInfo.appendChild(meta);
     li.appendChild(fileInfo);
 
-    // ✅ Radios de status
+    // Cria radios de status para cada opção
     ["validado", "erro", "invalido"].forEach(val => {
       const div = document.createElement('div');
       div.className = "checkbox-group";
 
       const input = document.createElement('input');
       input.type = "radio";
-      input.name = "status_" + i;
+      input.name = "status_" + i; // Nome único por arquivo
       input.value = val;
-      input.checked = statuses[i] === val;
+      input.checked = statuses[i] === val; // Marca o status atual
 
+      // Evento para alterar status
       input.addEventListener("change", () => {
         statuses[i] = val;
-        saveStatuses(); // 💾 salva no localStorage
-        updateStats();
-        renderFiles();
+        saveStatuses(); // Salva no localStorage
+        updateStats();  // Atualiza contadores
+        renderFiles();  // Re-renderiza a lista
       });
 
       div.appendChild(input);
@@ -107,16 +125,21 @@ function renderFiles() {
     });
 
     ul.appendChild(li);
-    ul.appendChild(document.createElement('hr'));
+    ul.appendChild(document.createElement('hr')); // Linha separadora
   });
 
+  // Renderiza controles de paginação
   renderPagination(totalPages);
+  
+  // Atualiza estatísticas
   updateStats();
 }
 
-// Renderiza botões de página
+// Renderiza botões de paginação
 function renderPagination(totalPages) {
   let paginationDiv = document.getElementById("pagination");
+  
+  // Cria div de paginação se não existir
   if (!paginationDiv) {
     paginationDiv = document.createElement("div");
     paginationDiv.id = "pagination";
@@ -126,13 +149,16 @@ function renderPagination(totalPages) {
     paginationDiv.style.marginTop = "15px";
     document.querySelector(".conteudo").appendChild(paginationDiv);
   }
-  paginationDiv.innerHTML = "";
+  
+  paginationDiv.innerHTML = ""; // Limpa paginação anterior
 
+  // Não mostra paginação se só há uma página
   if (totalPages <= 1) return;
 
+  // Botão "Anterior"
   const prev = document.createElement("button");
   prev.textContent = "← Anterior";
-  prev.disabled = currentPage === 1;
+  prev.disabled = currentPage === 1; // Desabilita na primeira página
   prev.addEventListener("click", () => {
     if (currentPage > 1) {
       currentPage--;
@@ -141,6 +167,7 @@ function renderPagination(totalPages) {
   });
   paginationDiv.appendChild(prev);
 
+  // Botões numéricos de página
   for (let p = 1; p <= totalPages; p++) {
     const btn = document.createElement("button");
     btn.textContent = p;
@@ -148,10 +175,13 @@ function renderPagination(totalPages) {
     btn.style.borderRadius = "6px";
     btn.style.border = "1px solid #ccc";
     btn.style.cursor = "pointer";
+    
+    // Destaca página atual
     if (p === currentPage) {
       btn.style.backgroundColor = "#11228d";
       btn.style.color = "#fff";
     }
+    
     btn.addEventListener("click", () => {
       currentPage = p;
       renderFiles();
@@ -159,9 +189,10 @@ function renderPagination(totalPages) {
     paginationDiv.appendChild(btn);
   }
 
+  // Botão "Próxima"
   const next = document.createElement("button");
   next.textContent = "Próxima →";
-  next.disabled = currentPage === totalPages;
+  next.disabled = currentPage === totalPages; // Desabilita na última página
   next.addEventListener("click", () => {
     if (currentPage < totalPages) {
       currentPage++;
@@ -171,10 +202,13 @@ function renderPagination(totalPages) {
   paginationDiv.appendChild(next);
 }
 
-// Atualiza contadores
+// Atualiza os contadores de estatísticas
 function updateStats() {
+  // Conta quantos arquivos tem cada status
   const counts = { pendente: 0, validado: 0, erro: 0, invalido: 0 };
   statuses.forEach(st => counts[st]++);
+  
+  // Atualiza o HTML dos contadores
   document.getElementById('stats').innerHTML = `
     <span>Pendentes: ${counts.pendente}</span>
     <span>Validados: ${counts.validado}</span>
@@ -182,21 +216,29 @@ function updateStats() {
     <span>Inválidos: ${counts.invalido}</span>`;
 }
 
-// Troca de abas
+// Event listeners para as abas
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
+    // Remove classe active de todas as abas
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    
+    // Adiciona classe active na aba clicada
     tab.classList.add('active');
+    
+    // Atualiza aba atual e reseta para primeira página
     currentTab = tab.dataset.tab;
     currentPage = 1;
+    
+    // Re-renderiza os arquivos
     renderFiles();
   });
 });
 
-// Busca
+// Event listener para a busca
 document.getElementById('searchBox').addEventListener('input', () => {
-  currentPage = 1;
-  renderFiles();
+  currentPage = 1; // Reseta para primeira página
+  renderFiles();   // Re-renderiza com o filtro de busca
 });
 
+// Inicializa a aplicação carregando os arquivos
 loadFiles();
