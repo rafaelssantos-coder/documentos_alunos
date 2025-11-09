@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <title>Lista de Arquivos - Drive</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="jscript.js">
+  
+</head>
+<body>
+
+  <div class="menu">
+    <h1>Arquivos de Alunos</h1>
+  </div>
+
+  <div class="conteudo">
+
+    <!-- Indicadores -->
+    <div class="stats" id="stats">
+      <span>Pendentes: 0</span>
+      <span>Validados: 0</span>
+      <span>Com Erro: 0</span>
+      <span>Inválidos: 0</span>
+    </div>
+
+    <!-- Filtro e abas -->
+    <div class="filter-bar">
+      <input type="text" id="searchBox" placeholder="🔍 Buscar arquivo...">
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="arquivos">Arquivos</div>
+      <div class="tab" data-tab="pendente">Pendentes</div>
+      <div class="tab" data-tab="validado">Validados</div>
+      <div class="tab" data-tab="erro">Com erro/incompleto</div>
+      <div class="tab" data-tab="invalido">Inválidos</div>
+    </div>
+
+
+    <div id="status">Carregando...</div>
+
+    <!-- Cabeçalho -->
+    <div class="header-row">
+      <span>Arquivos</span>
+      <span>Validado</span>
+      <span>Erro ou Incompleto</span>
+      <span>Inválido</span>
+    </div>
+
+
+    <ul id="files"></ul>
+  </div>
+
+</body>
+</html>
