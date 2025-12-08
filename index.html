@@ -123,18 +123,18 @@ function renderFiles() {
     // Aplica filtro por aba
     filtered = filtered.filter(f => {
       const st = statuses[f.index];
-      if (currentTab === "arquivos") return true; // Mostra todos
+      if (currentTab === "arquivos") return true; 
       if (currentTab === "pendente") return st === "pendente";
       if (currentTab === "validado") return st === "validado";
-      if (currentTab === "erro") return st === "erro";
       if (currentTab === "invalido") return st === "invalido";
+
       return true;
     });
   }
 
   // Paginação
   const totalPages = Math.ceil(filtered.length / filesPerPage);
-  if (currentPage > totalPages) currentPage = 1; // Ajusta página se necessário
+  if (currentPage > totalPages) currentPage = 1;
   const start = (currentPage - 1) * filesPerPage;
   const paginated = filtered.slice(start, start + filesPerPage);
 
@@ -151,7 +151,7 @@ function renderFiles() {
     const a = document.createElement('a');
     a.href = f.url;
     a.textContent = f.name;
-    a.target = "_blank"; // Abre em nova aba
+    a.target = "_blank"; 
 
     // Metadados do arquivo
     const meta = document.createElement('div');
@@ -163,22 +163,22 @@ function renderFiles() {
     li.appendChild(fileInfo);
 
     // Cria radios de status para cada opção
-    ["validado", "erro", "invalido"].forEach(val => {
+    ["validado", "pendente", "invalido"].forEach(val => {   
       const div = document.createElement('div');
       div.className = "checkbox-group";
 
       const input = document.createElement('input');
       input.type = "radio";
-      input.name = "status_" + i; // Nome único por arquivo
+      input.name = "status_" + i;
       input.value = val;
-      input.checked = statuses[i] === val; // Marca o status atual
+      input.checked = statuses[i] === val;
 
       // Evento para alterar status
       input.addEventListener("change", () => {
         statuses[i] = val;
-        saveStatuses(); // Salva no localStorage
-        updateStats();  // Atualiza contadores
-        renderFiles();  // Re-renderiza a lista
+        saveStatuses();
+        updateStats();
+        renderFiles();
       });
 
       div.appendChild(input);
@@ -186,7 +186,7 @@ function renderFiles() {
     });
 
     ul.appendChild(li);
-    ul.appendChild(document.createElement('hr')); // Linha separadora
+    ul.appendChild(document.createElement('hr'));
   });
 
   // Renderiza controles de paginação
@@ -200,7 +200,6 @@ function renderFiles() {
 function renderPagination(totalPages) {
   let paginationDiv = document.getElementById("pagination");
   
-  // Cria div de paginação se não existir
   if (!paginationDiv) {
     paginationDiv = document.createElement("div");
     paginationDiv.id = "pagination";
@@ -211,15 +210,13 @@ function renderPagination(totalPages) {
     document.querySelector(".conteudo").appendChild(paginationDiv);
   }
   
-  paginationDiv.innerHTML = ""; // Limpa paginação anterior
+  paginationDiv.innerHTML = "";
 
-  // Não mostra paginação se só há uma página
   if (totalPages <= 1) return;
 
-  // Botão "Anterior"
   const prev = document.createElement("button");
   prev.textContent = "← Anterior";
-  prev.disabled = currentPage === 1; // Desabilita na primeira página
+  prev.disabled = currentPage === 1;
   prev.addEventListener("click", () => {
     if (currentPage > 1) {
       currentPage--;
@@ -228,7 +225,6 @@ function renderPagination(totalPages) {
   });
   paginationDiv.appendChild(prev);
 
-  // Botões numéricos de página
   for (let p = 1; p <= totalPages; p++) {
     const btn = document.createElement("button");
     btn.textContent = p;
@@ -237,7 +233,6 @@ function renderPagination(totalPages) {
     btn.style.border = "1px solid #ccc";
     btn.style.cursor = "pointer";
     
-    // Destaca página atual
     if (p === currentPage) {
       btn.style.backgroundColor = "#11228d";
       btn.style.color = "#fff";
@@ -250,10 +245,9 @@ function renderPagination(totalPages) {
     paginationDiv.appendChild(btn);
   }
 
-  // Botão "Próxima"
   const next = document.createElement("button");
   next.textContent = "Próxima →";
-  next.disabled = currentPage === totalPages; // Desabilita na última página
+  next.disabled = currentPage === totalPages;
   next.addEventListener("click", () => {
     if (currentPage < totalPages) {
       currentPage++;
@@ -266,7 +260,7 @@ function renderPagination(totalPages) {
 // Atualiza os contadores de estatísticas
 function updateStats() {
   // Conta quantos arquivos tem cada status
-  const counts = { pendente: 0, validado: 0, erro: 0, invalido: 0 };
+  const counts = { pendente: 0, validado: 0, invalido: 0 };  
   statuses.forEach(st => counts[st]++);
   
   // Atualiza o HTML dos contadores
@@ -279,25 +273,21 @@ function updateStats() {
 // Event listeners para as abas
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    // Remove classe active de todas as abas
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     
-    // Adiciona classe active na aba clicada
     tab.classList.add('active');
     
-    // Atualiza aba atual e reseta para primeira página
     currentTab = tab.dataset.tab;
     currentPage = 1;
     
-    // Re-renderiza os arquivos
     renderFiles();
   });
 });
 
 // Event listener para a busca
 document.getElementById('searchBox').addEventListener('input', () => {
-  currentPage = 1; // Reseta para primeira página
-  renderFiles();   // Re-renderiza com o filtro de busca
+  currentPage = 1;
+  renderFiles();
 });
 
 // Inicializa a aplicação carregando os arquivos
@@ -306,8 +296,3 @@ loadFiles();
 </script>
   
 </html>
-
-
-
-
-
